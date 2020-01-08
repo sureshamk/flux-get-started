@@ -1,27 +1,31 @@
 ---
-apiVersion: flux.weave.works/v1beta1
+apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
   name: ghost
   namespace: demo
   annotations:
-    flux.weave.works/automated: "false"
-    flux.weave.works/tag.chart-image: glob:1.21.*
+    fluxcd.io/automated: "false"
+    fluxcd.io/tag.chart-image: glob:3.1.1-debian-9-*
 spec:
   releaseName: ghost
   chart:
-    git: ssh://git@github.com/weaveworks/flux-get-started
+    git: ssh://git@github.com/fluxcd/flux-get-started
     ref: master
     path: charts/ghost
   values:
-    image: bitnami/ghost:1.21.5-r0
+    image:
+      repository: bitnami/ghost
+      tag: 3.1.1-debian-9-r0
     persistence:
       enabled: false
     resources:
       requests:
         memory: 32Mi
         cpu: 10m
-    serviceType: ClusterIP
+    service:
+      type: ClusterIP
     mariadb:
-      persistence:
-        enabled: false
+      master:
+        persistence:
+          enabled: false
